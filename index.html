@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* sidebar */
+  --sb:      #5b47e0;
+  --sb-dk:   #4836c4;
+  --sb-lite: #7464f0;
+  --sb-ni:   rgba(255,255,255,.1);
+  --sb-on:   rgba(255,255,255,.18);
+  --sb-t:    rgba(255,255,255,.72);
+  --sb-t2:   rgba(255,255,255,.38);
+  --sb-bd:   rgba(255,255,255,.14);
+  /* main */
+  --bg:      #f7f6ff;
+  --bg2:     #ffffff;
+  --bg3:     #f0eeff;
+  --bg4:     #e6e2ff;
+  --bd:      rgba(91,71,224,.12);
+  --bd2:     rgba(91,71,224,.22);
+  --t:       #1a1640;
+  --t2:      #635d8a;
+  --t3:      #b0aacf;
+  /* accents */
+  --pu:      #7f77dd;
+  --pu2:     #534ab7;
+  --pu-l:    #eeedfe;
+  --te:      #1d9e75;
+  --te2:     #0f6e56;
+  --te-l:    #e1f5ee;
+  --co:      #d85a30;
+  --co2:     #993c1d;
+  --co-l:    #faece7;
+  --pi:      #d4537e;
+  --pi2:     #993556;
+  --pi-l:    #fbeaf0;
+  --am:      #ba7517;
+  --am2:     #854f0b;
+  --am-l:    #faeeda;
+  --re:      #e24b4a;
+  --re2:     #a32d2d;
+  --re-l:    #fcebeb;
+  --bl:      #378add;
+  --bl2:     #185fa5;
+  --bl-l:    #e6f1fb;
+  /* layout */
+  --r:       10px;
+  --rl:      14px;
+  --sw:      238px;
+  --fn:      'Plus Jakarta Sans', sans-serif;
+  --fh:      'Space Grotesk', sans-serif;
+  --mo:      'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--fn);background:var(--bg);color:var(--t);font-size:14px;line-height:1.55;display:flex;overflow-x:hidden}
+
+/* ═══ SIDEBAR ═════════════════════════════════ */
+.sb{width:var(--sw);min-height:100vh;background:var(--sb);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:20;transition:transform .25s}
+.sb::after{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:var(--sb-bd)}
+
+.sb-logo{padding:22px 19px 19px;border-bottom:1px solid var(--sb-bd);display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
+.sb-icon{width:36px;height:36px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-icon svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2}
+.sb-appname{font-family:var(--fh);font-size:16px;font-weight:700;color:#fff;letter-spacing:-.4px;line-height:1.1}
+.sb-tagline{font-size:10px;color:var(--sb-t2);margin-top:2px}
+
+.sb-group{padding:12px 0 4px}
+.sb-label{font-size:10px;font-weight:700;color:var(--sb-t2);letter-spacing:1.1px;text-transform:uppercase;padding:0 19px 6px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 15px;margin:1px 9px;border-radius:var(--r);cursor:pointer;color:var(--sb-t);font-size:13px;font-weight:500;border:none;background:none;width:calc(100% - 18px);text-align:left;font-family:var(--fn);transition:background .12s,color .12s}
+.ni svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0;opacity:.65;transition:opacity .12s}
+.ni:hover{background:var(--sb-ni);color:#fff}
+.ni:hover svg{opacity:.9}
+.ni.on{background:var(--sb-on);color:#fff;font-weight:600}
+.ni.on svg{opacity:1}
+.ni-ct{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;font-size:11px;padding:1px 8px;border-radius:20px;font-family:var(--mo);font-weight:400}
+.sb-sep{height:1px;background:var(--sb-bd);margin:6px 16px}
+.sb-foot{margin-top:auto;padding:14px 19px;border-top:1px solid var(--sb-bd)}
+.sb-foot p{font-size:11px;color:var(--sb-t2)}
+
+/* ═══ MAIN ════════════════════════════════════ */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+.topbar{height:58px;background:var(--bg2);border-bottom:1.5px solid var(--bd);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:10}
+.topbar-info h1{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:-.3px}
+.topbar-info p{font-size:12px;color:var(--t3);margin-top:1px}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.ct{padding:28px;flex:1}
+
+/* ═══ BUTTONS ═════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:var(--fn);transition:all .13s;white-space:nowrap;line-height:1}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0}
+.b-pri{background:var(--sb);color:#fff}.b-pri:hover{background:var(--sb-dk)}
+.b-sec{background:var(--bg3);color:var(--t2);border:1.5px solid var(--bd2)}.b-sec:hover{background:var(--bg4);color:var(--t)}
+.b-teal{background:var(--te-l);color:var(--te2);border:1.5px solid rgba(29,158,117,.22)}.b-teal:hover{background:#c5e8db}
+.b-red{background:var(--re-l);color:var(--re2);border:1.5px solid rgba(226,75,74,.22)}.b-red:hover{background:#f9d3d3}
+.b-sm{padding:6px 13px;font-size:12px}
+.b-xs{padding:4px 10px;font-size:11px}
+.b-icon{padding:8px;border-radius:9px}
+
+/* ═══ FORM ════════════════════════════════════ */
+.fg{margin-bottom:16px}
+.fl{font-size:11px;color:var(--t2);font-weight:700;display:block;margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase}
+.fi,.fs,.ft{width:100%;background:#fff;border:1.5px solid var(--bd2);border-radius:var(--r);color:var(--t);font-family:var(--fn);font-size:13px;padding:9px 13px;outline:none;transition:border .13s,box-shadow .13s}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--sb);box-shadow:0 0 0 3px rgba(91,71,224,.1)}
+.fi::placeholder,.ft::placeholder{color:var(--t3)}
+.fs{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23b0aacf' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;background-color:#fff}
+.fs option{background:#fff}
+.ft{resize:vertical;min-height:70px;line-height:1.5}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+/* ═══ CARDS ═══════════════════════════════════ */
+.card{background:#fff;border:1.5px solid var(--bd);border-radius:var(--rl);padding:20px 22px}
+.card-sm{padding:16px 18px}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(142px,1fr));gap:11px;margin-bottom:24px}
+.stat{border-radius:var(--rl);padding:17px 19px;border:1.5px solid transparent}
+.stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.stat-val{font-family:var(--fh);font-size:30px;font-weight:700;letter-spacing:-1.5px;line-height:1}
+.stat-neutral{background:#fff;border-color:var(--bd)}
+.stat-purple{background:var(--pu-l);border-color:rgba(127,119,221,.25)}
+.stat-teal{background:var(--te-l);border-color:rgba(29,158,117,.25)}
+.stat-red{background:var(--re-l);border-color:rgba(226,75,74,.25)}
+.stat-amber{background:var(--am-l);border-color:rgba(186,117,23,.25)}
+.stat-pink{background:var(--pi-l);border-color:rgba(212,83,126,.25)}
+
+/* ═══ BADGES ══════════════════════════════════ */
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.1px}
+.t-p1{background:var(--re-l);color:var(--re2);border:1.5px solid rgba(226,75,74,.3)}
+.t-p2{background:var(--am-l);color:var(--am2);border:1.5px solid rgba(186,117,23,.3)}
+.t-p3{background:var(--bl-l);color:var(--bl2);border:1.5px solid rgba(55,138,221,.3)}
+.t-pass{background:var(--te-l);color:var(--te2);border:1.5px solid rgba(29,158,117,.3)}
+.t-fail{background:var(--re-l);color:var(--re2);border:1.5px solid rgba(226,75,74,.3)}
+.t-pend{background:var(--bg3);color:var(--t2);border:1.5px solid var(--bd)}
+.t-bloq{background:var(--am-l);color:var(--am2);border:1.5px solid rgba(186,117,23,.3)}
+.t-tipo{background:var(--pu-l);color:var(--pu2);font-family:var(--mo);font-size:10px;letter-spacing:.3px;border:1.5px solid rgba(127,119,221,.25);font-weight:500}
+
+/* ═══ TC ITEMS ════════════════════════════════ */
+.tc-wrap{display:flex;flex-direction:column;gap:9px}
+.tc-item{background:#fff;border:1.5px solid var(--bd);border-radius:var(--rl);padding:14px 17px;transition:border-color .13s,box-shadow .13s;position:relative;overflow:hidden}
+.tc-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pu-l);transition:background .13s}
+.tc-item:hover{border-color:rgba(91,71,224,.3);box-shadow:0 2px 12px rgba(91,71,224,.08)}
+.tc-item:hover::before{background:var(--sb)}
+.tc-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;padding-left:2px}
+.tc-id{font-family:var(--mo);font-size:11px;color:var(--t3)}
+.tc-title{font-size:14px;font-weight:600;flex:1;min-width:0}
+.tc-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding-left:2px}
+.tc-meta span{font-size:12px;color:var(--t3)}
+.tc-actions{display:flex;gap:6px;margin-top:11px;padding-top:11px;border-top:1.5px solid var(--bg3);padding-left:2px}
+.st-sel{background:var(--bg3);border:1.5px solid var(--bd2);border-radius:20px;color:var(--t);font-family:var(--fn);font-size:12px;font-weight:600;padding:3px 26px 3px 11px;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%23b0aacf' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;margin-left:auto;transition:border .13s}
+.st-sel:focus{border-color:var(--sb)}
+.st-sel option{background:#fff}
+
+/* ═══ PASO ════════════════════════════════════ */
+.paso-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.paso-n{font-size:12px;color:var(--sb);font-family:var(--mo);min-width:22px;font-weight:500}
+
+/* ═══ PILLS ═══════════════════════════════════ */
+.pill-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 13px;border-radius:20px;cursor:pointer;border:1.5px solid var(--bd2);color:var(--t2);transition:all .13s;background:#fff;user-select:none;font-weight:500}
+.pill input{display:none}
+.pill.on{border-color:var(--sb);color:var(--sb-dk);background:var(--pu-l);font-weight:700}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ═══ BARS ════════════════════════════════════ */
+.bar-row{display:grid;grid-template-columns:155px 1fr 72px;align-items:center;gap:10px;margin-bottom:10px}
+.bar-lbl{font-size:12px;color:var(--t2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{background:var(--bg3);border-radius:5px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .4s ease}
+.bar-val{font-size:12px;font-weight:700;text-align:right;font-family:var(--mo)}
+
+/* ═══ PROGRESS ════════════════════════════════ */
+.prog-wrap{background:var(--bg3);border-radius:8px;height:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:8px;background:var(--te);transition:width .5s ease}
+
+/* ═══ SECTION PAGE ════════════════════════════ */
+.page{display:none}.page.on{display:block}
+
+/* ═══ EMPTY STATE ═════════════════════════════ */
+.empty-state{text-align:center;padding:72px 20px}
+.empty-ico{font-size:44px;margin-bottom:16px;opacity:.4}
+.empty-state h3{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.empty-state p{font-size:13px;color:var(--t3);margin-bottom:22px}
+
+/* ═══ SECTION TITLE ═══════════════════════════ */
+.sec-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--t);margin-bottom:22px;letter-spacing:-.4px;display:flex;align-items:center;gap:10px}
+.sec-dot{width:8px;height:8px;border-radius:50%;background:var(--sb);flex-shrink:0}
+
+/* ═══ TOAST ═══════════════════════════════════ */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--t);color:#fff;border-radius:var(--rl);padding:12px 18px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px;transform:translateY(70px);opacity:0;transition:all .22s;z-index:999;max-width:300px}
+.toast.on{transform:translateY(0);opacity:1}
+.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:var(--te-m,#5dcaa5)}.dot-er{background:#f87171}.dot-in{background:#93c5fd}
+
+/* ═══ MODAL ═══════════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,22,64,.5);z-index:50;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal-box{background:#fff;border:1.5px solid var(--bd2);border-radius:18px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;padding:26px}
+.modal-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px}
+.modal-title{font-family:var(--fh);font-size:16px;font-weight:700}
+.modal-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.modal-x{background:var(--bg3);border:none;cursor:pointer;color:var(--t2);font-size:16px;padding:6px 9px;border-radius:9px;font-weight:700;line-height:1;font-family:var(--fn)}.modal-x:hover{background:var(--bg4);color:var(--t)}
+.det-sec{margin-bottom:16px}
+.det-label{font-size:10px;font-weight:700;color:var(--sb);text-transform:uppercase;letter-spacing:.9px;margin-bottom:7px}
+.det-text{font-size:13px;color:var(--t2);line-height:1.65}
+.step-row{display:flex;gap:9px;padding:6px 0;border-bottom:1px solid var(--bg3)}
+.step-row:last-child{border-bottom:none}
+.step-num{font-family:var(--mo);font-size:11px;color:var(--t3);min-width:20px;padding-top:2px}
+
+/* ═══ ALERT ═══════════════════════════════════ */
+.alert-box{padding:12px 15px;border-radius:var(--r);font-size:13px;font-weight:500;margin-top:13px}
+.alert-warn{background:var(--am-l);border:1.5px solid rgba(186,117,23,.28);color:var(--am2)}
+
+/* ═══ FILTERS ═════════════════════════════════ */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.f-sel{background:#fff;border:1.5px solid var(--bd2);border-radius:var(--r);color:var(--t2);font-family:var(--fn);font-size:13px;font-weight:500;padding:7px 28px 7px 12px;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23b0aacf' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border .13s}
+.f-sel:focus{border-color:var(--sb)}.f-sel option{background:#fff}
+
+/* ═══ TABLE ═══════════════════════════════════ */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:9px 11px;border-bottom:2px solid var(--bg3);font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px}
+.tbl td{padding:9px 11px;border-bottom:1px solid var(--bg3);vertical-align:middle}
+.tbl tr:hover td{background:var(--bg3);cursor:pointer}
+
+/* ═══ DIVIDER ═════════════════════════════════ */
+hr{border:none;border-top:1.5px solid var(--bg3);margin:18px 0}
+
+/* ═══ SCROLLBAR ════════════════════════════════ */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* ═══ MOBILE ══════════════════════════════════ */
+#mob-btn{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--t);margin-right:2px}
+#mob-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(26,22,64,.45);z-index:19}
+@media(max-width:720px){
+  .sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}
+  .mob-overlay.on{display:block}.main{margin-left:0}#mob-btn{display:flex}
+  .g2,.g3,.g4{grid-template-columns:1fr}.two-col{grid-template-columns:1fr!important}
+  .stat-grid{grid-template-columns:1fr 1fr}.topbar-right .b-sec{display:none}
+  .bar-row{grid-template-columns:95px 1fr 52px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════ -->
+<aside class="sb" id="sb">
+  <div class="sb-logo" onclick="nav('estimador')">
+    <div class="sb-icon">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+    </div>
+    <div>
+      <div class="sb-appname">QA Manager</div>
+      <div class="sb-tagline">v2.0 · Candy Pop</div>
+    </div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-label">Principal</div>
+    <button class="ni on" id="ni-estimador" onclick="nav('estimador')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Estimador
+    </button>
+    <button class="ni" id="ni-nuevo" onclick="nav('nuevo')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo caso
+    </button>
+  </div>
+
+  <div class="sb-sep"></div>
+
+  <div class="sb-group">
+    <div class="sb-label">Gestión</div>
+    <button class="ni" id="ni-casos" onclick="nav('casos')">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+      Casos
+      <span class="ni-ct" id="ni-ct">0</span>
+    </button>
+    <button class="ni" id="ni-resumen" onclick="nav('resumen')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Resumen
+    </button>
+  </div>
+
+  <div class="sb-sep"></div>
+
+  <div class="sb-group">
+    <div class="sb-label">Herramientas</div>
+    <button class="ni" onclick="exportCSV()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar CSV
+    </button>
+    <button class="ni" onclick="clearAll()">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Limpiar datos
+    </button>
+  </div>
+
+  <div class="sb-foot"><p>Datos guardados automáticamente</p></div>
+</aside>
+<div class="mob-overlay" id="mob-ov" onclick="closeMob()"></div>
+
+<!-- ══ MAIN ═════════════════════════════════════════ -->
+<div class="main">
+
+  <header class="topbar">
+    <button id="mob-btn" onclick="toggleMob()">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-info">
+      <h1 id="tb-title">Estimador de tiempo</h1>
+      <p id="tb-sub">Calcula el esfuerzo de prueba</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn b-sec b-sm" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar CSV
+      </button>
+      <button class="btn b-pri b-sm" onclick="nav('nuevo')">+ Nuevo caso</button>
+    </div>
+  </header>
+
+  <!-- ── ESTIMADOR ─────────────────────── -->
+  <div id="page-estimador" class="page on ct">
+    <div class="sec-title"><span class="sec-dot"></span>Estimador de tiempo</div>
+
+    <div class="grid g2 fg">
+      <div>
+        <label class="fl">Módulo / feature</label>
+        <input class="fi" id="e-mod" placeholder="Ej: Login, Checkout, API usuarios…"/>
+      </div>
+      <div>
+        <label class="fl">Tipo de prueba</label>
+        <select class="fs" id="e-tipo">
+          <option value="funcional">Funcional</option>
+          <option value="regresion">Regresión</option>
+          <option value="humo">Smoke / Sanity</option>
+          <option value="integracion">Integración</option>
+          <option value="e2e">End-to-End</option>
+          <option value="api">API / Backend</option>
+          <option value="ui">UI / Visual</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid g3 fg">
+      <div>
+        <label class="fl">Cantidad de casos</label>
+        <input class="fi" id="e-n" type="number" value="10" min="1" max="500"/>
+      </div>
+      <div>
+        <label class="fl">Complejidad</label>
+        <select class="fs" id="e-comp">
+          <option value="baja">Baja</option>
+          <option value="media" selected>Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl">Nivel del QA</label>
+        <select class="fs" id="e-nivel">
+          <option value="junior">Junior</option>
+          <option value="semi" selected>Semi-senior</option>
+          <option value="senior">Senior</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fg">
+      <label class="fl">Etapas a incluir</label>
+      <div class="pill-wrap" id="pills">
+        <label class="pill" onclick="togglePill(this)"><input type="checkbox" value="req"><span class="pill-dot"></span>Análisis de req.</label>
+        <label class="pill on" onclick="togglePill(this)"><input type="checkbox" value="diseno" checked><span class="pill-dot"></span>Diseño de casos</label>
+        <label class="pill on" onclick="togglePill(this)"><input type="checkbox" value="ejec" checked><span class="pill-dot"></span>Ejecución</label>
+        <label class="pill on" onclick="togglePill(this)"><input type="checkbox" value="bugs" checked><span class="pill-dot"></span>Reporte de bugs</label>
+        <label class="pill" onclick="togglePill(this)"><input type="checkbox" value="retest"><span class="pill-dot"></span>Re-testing</label>
+        <label class="pill" onclick="togglePill(this)"><input type="checkbox" value="devs"><span class="pill-dot"></span>Revisión con devs</label>
+        <label class="pill" onclick="togglePill(this)"><input type="checkbox" value="auto"><span class="pill-dot"></span>Automatización</label>
+        <label class="pill" onclick="togglePill(this)"><input type="checkbox" value="pair"><span class="pill-dot"></span>Pair testing</label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn b-pri" onclick="calcEst()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Estimar tiempo
+      </button>
+      <button class="btn b-sec" id="btn-crear" style="display:none" onclick="goCrear()">
+        Crear casos para este módulo →
+      </button>
+    </div>
+
+    <div id="est-result" style="display:none;margin-top:28px">
+      <hr>
+      <div class="stat-grid" id="est-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px" class="two-col">
+        <div class="card card-sm">
+          <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">Desglose por etapa</div>
+          <div id="est-bars"></div>
+        </div>
+        <div class="card card-sm">
+          <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">Distribución</div>
+          <canvas id="est-donut" width="190" height="190" style="display:block;margin:0 auto"></canvas>
+          <div id="est-legend" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+      <div id="est-alert"></div>
+      <div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn b-sec b-sm" onclick="copyEst()">Copiar estimación</button>
+        <button class="btn b-teal b-sm" onclick="saveRef()">Guardar referencia</button>
+      </div>
+      <div id="est-refs" style="margin-top:18px"></div>
+    </div>
+  </div>
+
+  <!-- ── NUEVO CASO ─────────────────────── -->
+  <div id="page-nuevo" class="page ct">
+    <div style="max-width:740px">
+      <div class="sec-title"><span class="sec-dot"></span>Nuevo caso de prueba</div>
+      <div class="grid g2 fg">
+        <div><label class="fl">Módulo / feature</label><input class="fi" id="c-mod" placeholder="Ej: Login, Carrito, Pagos…"/></div>
+        <div><label class="fl">ID del caso</label><input class="fi" id="c-id" placeholder="TC-001"/></div>
+      </div>
+      <div class="fg"><label class="fl">Título del caso</label><input class="fi" id="c-tit" placeholder="Ej: Verificar login con credenciales válidas"/></div>
+      <div class="fg"><label class="fl">Descripción / objetivo</label><textarea class="ft" id="c-desc" placeholder="¿Qué se está probando y por qué?"></textarea></div>
+      <div class="fg"><label class="fl">Precondiciones</label><textarea class="ft" id="c-pre" placeholder="Estado del sistema antes de ejecutar" style="min-height:60px"></textarea></div>
+      <div class="fg">
+        <label class="fl">Pasos de ejecución</label>
+        <div id="c-pasos"></div>
+        <button class="btn b-sec b-sm" style="margin-top:8px" onclick="addPaso()">+ Agregar paso</button>
+      </div>
+      <div class="fg"><label class="fl">Resultado esperado</label><textarea class="ft" id="c-esp" placeholder="¿Qué debería ocurrir si el sistema funciona correctamente?"></textarea></div>
+      <div class="grid g4 fg">
+        <div><label class="fl">Tipo</label>
+          <select class="fs" id="c-tipo"><option value="funcional">Funcional</option><option value="regresion">Regresión</option><option value="humo">Smoke</option><option value="api">API</option><option value="e2e">E2E</option><option value="ui">UI</option></select>
+        </div>
+        <div><label class="fl">Prioridad</label>
+          <select class="fs" id="c-prio"><option value="P1">P1 — Crítica</option><option value="P2">P2 — Alta</option><option value="P3" selected>P3 — Media</option></select>
+        </div>
+        <div><label class="fl">Complejidad</label>
+          <select class="fs" id="c-comp"><option value="baja">Baja</option><option value="media" selected>Media</option><option value="alta">Alta</option></select>
+        </div>
+        <div><label class="fl">Asignado a</label><input class="fi" id="c-qa" placeholder="QA responsable"/></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Datos de prueba <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">(opcional)</span></label>
+        <textarea class="ft" id="c-datos" placeholder="Usuarios, contraseñas, parámetros de entrada…" style="min-height:55px"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <button class="btn b-pri" onclick="saveCase()">Guardar caso</button>
+        <button class="btn b-sec" onclick="resetForm();nav('casos')">Cancelar</button>
+        <span id="edit-badge" style="display:none;font-size:12px;font-weight:700;color:var(--sb);background:var(--pu-l);padding:3px 11px;border-radius:20px">Editando caso</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CASOS ─────────────────────────── -->
+  <div id="page-casos" class="page ct">
+    <div class="sec-title"><span class="sec-dot"></span>Casos de prueba</div>
+    <div class="filter-bar">
+      <select class="f-sel" id="f-tipo" onchange="renderCasos()"><option value="">Todos los tipos</option><option value="funcional">Funcional</option><option value="regresion">Regresión</option><option value="humo">Smoke</option><option value="api">API</option><option value="e2e">E2E</option><option value="ui">UI</option></select>
+      <select class="f-sel" id="f-est" onchange="renderCasos()"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="bloqueado">Bloqueado</option></select>
+      <select class="f-sel" id="f-prio" onchange="renderCasos()"><option value="">Todas las prioridades</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option></select>
+      <input class="fi" id="f-q" placeholder="Buscar…" oninput="renderCasos()" style="max-width:190px"/>
+      <span id="f-count" style="font-size:12px;color:var(--t3);font-weight:600"></span>
+      <button class="btn b-pri b-sm" style="margin-left:auto" onclick="nav('nuevo')">+ Nuevo</button>
+    </div>
+    <div class="tc-wrap" id="tc-list"></div>
+  </div>
+
+  <!-- ── RESUMEN ───────────────────────── -->
+  <div id="page-resumen" class="page ct">
+    <div class="sec-title"><span class="sec-dot"></span>Resumen del sprint</div>
+    <div id="res-content"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══ MODAL ════════════════════════════════════════ -->
+<div class="overlay" id="modal-ov">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-sub" id="modal-sub"></div>
+      </div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div style="margin-top:18px;display:flex;gap:8px">
+      <button class="btn b-sec b-sm" onclick="editFromModal()">Editar</button>
+      <button class="btn b-sec b-sm" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ═════════════════════════════════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-dot" id="toast-dot"></span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────
+const STORE_KEY = 'qa_candy_v2';
+let cases = [], refs = [], editIdx = null, modalIdx = null, stepCount = 0;
+
+const TIMES = {
+  funcional:   {req:10,diseno:15,ejec:12,bugs:8,retest:10,devs:20,auto:45,pair:15},
+  regresion:   {req:6,diseno:8,ejec:10,bugs:6,retest:8,devs:15,auto:40,pair:10},
+  humo:        {req:4,diseno:5,ejec:5,bugs:4,retest:5,devs:10,auto:30,pair:8},
+  integracion: {req:12,diseno:20,ejec:18,bugs:10,retest:12,devs:25,auto:60,pair:20},
+  e2e:         {req:14,diseno:25,ejec:20,bugs:12,retest:15,devs:30,auto:90,pair:25},
+  api:         {req:10,diseno:18,ejec:15,bugs:8,retest:10,devs:20,auto:50,pair:15},
+  ui:          {req:7,diseno:12,ejec:10,bugs:8,retest:8,devs:15,auto:35,pair:12},
+};
+const CF = {baja:.7, media:1, alta:1.5};
+const NF = {junior:1.4, semi:1, senior:.75};
+const ELABELS = {req:'Análisis req.',diseno:'Diseño de casos',ejec:'Ejecución',bugs:'Reporte bugs',retest:'Re-testing',devs:'Revisión devs',auto:'Automatización',pair:'Pair testing'};
+const ECOLORS = {req:'#7f77dd',diseno:'#5b47e0',ejec:'#1d9e75',bugs:'#e24b4a',retest:'#ba7517',devs:'#d4537e',auto:'#0f6e56',pair:'#888780'};
+const PAGES = {
+  estimador: ['Estimador de tiempo','Calcula el esfuerzo de prueba'],
+  nuevo:     ['Nuevo caso de prueba','Documenta y registra un caso'],
+  casos:     ['Casos de prueba','Gestiona todos tus casos'],
+  resumen:   ['Resumen del sprint','Métricas y análisis del ciclo'],
+};
+
+// ── PERSIST ───────────────────────────────────────────
+function persist() { try { localStorage.setItem(STORE_KEY, JSON.stringify({cases, refs})); } catch(e){} }
+function hydrate() { try { const d=JSON.parse(localStorage.getItem(STORE_KEY)||'{}'); cases=d.cases||[]; refs=d.refs||[]; } catch(e){ cases=[]; refs=[]; } }
+
+// ── NAVIGATION ────────────────────────────────────────
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(b => b.classList.remove('on'));
+  document.getElementById('page-'+page).classList.add('on');
+  document.getElementById('ni-'+page)?.classList.add('on');
+  const [title, sub] = PAGES[page];
+  document.getElementById('tb-title').textContent = title;
+  document.getElementById('tb-sub').textContent = sub;
+  if (page === 'casos') renderCasos();
+  if (page === 'resumen') renderResumen();
+  if (page === 'nuevo' && editIdx === null) resetForm();
+  closeMob();
+  updateBadge();
+}
+function updateBadge() { document.getElementById('ni-ct').textContent = cases.length; }
+function toggleMob() { document.getElementById('sb').classList.toggle('open'); document.getElementById('mob-ov').classList.toggle('on'); }
+function closeMob() { document.getElementById('sb').classList.remove('open'); document.getElementById('mob-ov').classList.remove('on'); }
+
+// ── PILLS ─────────────────────────────────────────────
+function togglePill(lbl) { const inp=lbl.querySelector('input'); inp.checked=!inp.checked; lbl.classList.toggle('on',inp.checked); }
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg, type='ok') {
+  const el=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-dot').className = 'toast-dot ' + {ok:'dot-ok',er:'dot-er',in:'dot-in'}[type];
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 2700);
+}
+
+// ── ESTIMADOR ─────────────────────────────────────────
+function calcEst() {
+  const tipo  = document.getElementById('e-tipo').value;
+  const n     = Math.max(1, parseInt(document.getElementById('e-n').value)||1);
+  const cf    = CF[document.getElementById('e-comp').value];
+  const nf    = NF[document.getElementById('e-nivel').value];
+  const base  = TIMES[tipo];
+  const keys  = ['req','diseno','ejec','bugs','retest','devs','auto','pair'];
+  let total=0, stages=[];
+  keys.forEach(k => {
+    const inp = document.querySelector(`#pills input[value="${k}"]`);
+    if (!inp || !inp.checked) return;
+    const m = base[k]*n*cf*nf; total+=m; stages.push({k,m});
+  });
+  if (!stages.length) { showToast('Selecciona al menos una etapa','er'); return; }
+
+  const H=total/60, D=H/8, maxM=Math.max(...stages.map(s=>s.m));
+
+  // Stats
+  const statDefs = [
+    {l:'Total horas',   v:H.toFixed(1)+'h',       cls:'stat-purple', lc:'#3c3489', vc:'#5b47e0'},
+    {l:'Días hábiles',  v:D.toFixed(1)+'d',        cls:'stat-teal',   lc:'#085041', vc:'#1d9e75'},
+    {l:'Casos',         v:n,                       cls:'stat-neutral',lc:'var(--t3)',vc:'var(--t)'},
+    {l:'Min / caso',    v:Math.round(total/n)+'min',cls:'stat-amber', lc:'#633806', vc:'#ba7517'},
+  ];
+  document.getElementById('est-stats').innerHTML = statDefs.map(s =>
+    `<div class="stat ${s.cls}">
+      <div class="stat-lbl" style="color:${s.lc}">${s.l}</div>
+      <div class="stat-val" style="color:${s.vc}">${s.v}</div>
+    </div>`
+  ).join('');
+
+  // Bars
+  document.getElementById('est-bars').innerHTML = stages.map(s => {
+    const pct=Math.round(s.m/total*100), bw=Math.round(s.m/maxM*100);
+    return `<div class="bar-row">
+      <span class="bar-lbl">${ELABELS[s.k]}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${bw}%;background:${ECOLORS[s.k]}"></div></div>
+      <span class="bar-val" style="color:${ECOLORS[s.k]}">${(s.m/60).toFixed(1)}h</span>
+    </div>`;
+  }).join('');
+
+  drawDonut(stages, total);
+
+  // Alert
+  const al = document.getElementById('est-alert');
+  if (D > 5) {
+    al.className='alert-box alert-warn';
+    al.style.display='block';
+    al.textContent=`La estimación supera una semana (${D.toFixed(1)} días). Considera dividir el módulo en entregas parciales.`;
+  } else { al.style.display='none'; }
+
+  document.getElementById('est-result').style.display = 'block';
+  document.getElementById('btn-crear').style.display = 'inline-flex';
+  renderRefs();
+  window._est = {mod:document.getElementById('e-mod').value||'Módulo',tipo,n,comp:document.getElementById('e-comp').value,nivel:document.getElementById('e-nivel').value,H,D,stages};
+}
+
+function drawDonut(stages, total) {
+  const cv=document.getElementById('est-donut'), ctx=cv.getContext('2d');
+  const cx=95,cy=95,r=78,ri=50;
+  ctx.clearRect(0,0,190,190);
+  let a=-Math.PI/2;
+  stages.forEach(s => {
+    const arc=s.m/total*2*Math.PI;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a,a+arc); ctx.closePath();
+    ctx.fillStyle=ECOLORS[s.k]; ctx.fill(); a+=arc;
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,ri,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill();
+  ctx.fillStyle='#1a1640'; ctx.font='700 13px Space Grotesk,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(stages.length+' etapas',cx,cy);
+
+  document.getElementById('est-legend').innerHTML = stages.map(s =>
+    `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+      <span style="width:10px;height:10px;border-radius:3px;background:${ECOLORS[s.k]};flex-shrink:0"></span>
+      <span style="color:var(--t2);flex:1;font-weight:500">${ELABELS[s.k]}</span>
+      <span style="color:var(--t3);font-family:var(--mo)">${Math.round(s.m/total*100)}%</span>
+    </div>`
+  ).join('');
+}
+
+function copyEst() {
+  const e=window._est; if(!e) return;
+  const txt=`Estimación QA — ${e.mod}\nTipo: ${e.tipo} | Casos: ${e.n} | Complejidad: ${e.comp} | Nivel: ${e.nivel}\nTotal: ${e.H.toFixed(1)}h (${e.D.toFixed(1)} días)\n\nDesglose:\n`+e.stages.map(s=>`  ${ELABELS[s.k]}: ${(s.m/60).toFixed(1)}h`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>showToast('Estimación copiada'));
+}
+function saveRef() {
+  const e=window._est; if(!e) return;
+  refs.push({...e, fecha:new Date().toLocaleDateString('es-PE')});
+  persist(); renderRefs(); showToast('Guardada como referencia');
+}
+function renderRefs() {
+  const el=document.getElementById('est-refs');
+  if (!refs.length) { el.innerHTML=''; return; }
+  el.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Estimaciones guardadas</div>`+
+    refs.slice(-4).reverse().map(e=>
+      `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1.5px solid var(--bd);border-left:4px solid var(--sb);border-radius:0 var(--r) var(--r) 0;margin-bottom:7px;flex-wrap:wrap">
+        <span style="font-size:13px;font-weight:700">${e.mod}</span>
+        <span class="tag t-tipo">${e.tipo}</span>
+        <span style="font-size:12px;color:var(--t3)">${e.n} casos · ${e.H.toFixed(1)}h</span>
+        <span style="font-size:12px;color:var(--t3);margin-left:auto">${e.fecha}</span>
+      </div>`
+    ).join('');
+}
+function goCrear() {
+  document.getElementById('c-mod').value  = document.getElementById('e-mod').value||'';
+  document.getElementById('c-tipo').value = document.getElementById('e-tipo').value;
+  nav('nuevo');
+}
+
+// ── CASES ─────────────────────────────────────────────
+function addPaso() {
+  stepCount++;
+  const wrap = document.getElementById('c-pasos');
+  const row = document.createElement('div'); row.className='paso-row';
+  row.innerHTML=`<span class="paso-n">${stepCount}.</span>
+    <input class="fi step-in" placeholder="Paso ${stepCount}" style="flex:1"/>
+    <button class="btn b-red b-icon b-xs" onclick="this.parentElement.remove();renum()" title="Eliminar">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+  wrap.appendChild(row);
+}
+function renum() {
+  document.querySelectorAll('.paso-row').forEach((r,i)=>r.querySelector('.paso-n').textContent=(i+1)+'.');
+  stepCount = document.querySelectorAll('.paso-row').length;
+}
+function resetForm() {
+  editIdx=null; stepCount=0;
+  document.getElementById('c-pasos').innerHTML='';
+  ['c-mod','c-id','c-tit','c-desc','c-pre','c-esp','c-qa','c-datos'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('c-prio').value='P3';
+  document.getElementById('c-comp').value='media';
+  document.getElementById('c-tipo').value='funcional';
+  document.getElementById('edit-badge').style.display='none';
+  addPaso(); addPaso(); addPaso();
+}
+function saveCase() {
+  const title = document.getElementById('c-tit').value.trim();
+  if (!title) { showToast('El título es obligatorio','er'); return; }
+  const steps = [...document.querySelectorAll('.step-in')].map(i=>i.value.trim()).filter(Boolean);
+  const c = {
+    id:     document.getElementById('c-id').value.trim()||'TC-'+String(cases.length+1).padStart(3,'0'),
+    mod:    document.getElementById('c-mod').value.trim()||'Sin módulo',
+    title, desc:document.getElementById('c-desc').value.trim(),
+    pre:    document.getElementById('c-pre').value.trim(),
+    steps, esp:document.getElementById('c-esp').value.trim(),
+    tipo:   document.getElementById('c-tipo').value,
+    prio:   document.getElementById('c-prio').value,
+    comp:   document.getElementById('c-comp').value,
+    qa:     document.getElementById('c-qa').value.trim(),
+    datos:  document.getElementById('c-datos').value.trim(),
+    estado: editIdx!==null ? cases[editIdx].estado : 'pendiente',
+    fecha:  new Date().toLocaleDateString('es-PE'),
+  };
+  if (editIdx!==null) { cases[editIdx]=c; editIdx=null; showToast('Caso actualizado'); }
+  else { cases.push(c); showToast('Caso guardado'); }
+  persist(); updateBadge(); nav('casos');
+}
+function editCase(i) {
+  editIdx=i; const c=cases[i];
+  document.getElementById('c-mod').value  = c.mod;
+  document.getElementById('c-id').value   = c.id;
+  document.getElementById('c-tit').value  = c.title;
+  document.getElementById('c-desc').value = c.desc||'';
+  document.getElementById('c-pre').value  = c.pre||'';
+  document.getElementById('c-esp').value  = c.esp||'';
+  document.getElementById('c-tipo').value = c.tipo;
+  document.getElementById('c-prio').value = c.prio;
+  document.getElementById('c-comp').value = c.comp;
+  document.getElementById('c-qa').value   = c.qa||'';
+  document.getElementById('c-datos').value= c.datos||'';
+  document.getElementById('edit-badge').style.display='inline';
+  stepCount=0; document.getElementById('c-pasos').innerHTML='';
+  (c.steps||[]).forEach(s=>{ addPaso(); document.querySelectorAll('.step-in')[stepCount-1].value=s; });
+  if (!c.steps?.length) { addPaso(); addPaso(); }
+  nav('nuevo');
+}
+function deleteCase(i) {
+  if (!confirm('¿Eliminar este caso? Esta acción no se puede deshacer.')) return;
+  cases.splice(i,1); persist(); updateBadge(); renderCasos(); showToast('Caso eliminado','in');
+}
+function changeStatus(i, val) { cases[i].estado=val; persist(); showToast('Estado actualizado'); }
+function dupRetest(i) {
+  const c={...cases[i], id:'RT-'+String(cases.length+1).padStart(3,'0'), title:'[Retest] '+cases[i].title, estado:'pendiente', fecha:new Date().toLocaleDateString('es-PE')};
+  cases.push(c); persist(); updateBadge(); renderCasos(); showToast('Duplicado como retest');
+}
+
+// ── RENDER CASES ──────────────────────────────────────
+function renderCasos() {
+  const ft=(document.getElementById('f-tipo').value),
+        fe=(document.getElementById('f-est').value),
+        fp=(document.getElementById('f-prio').value),
+        fq=(document.getElementById('f-q').value||'').toLowerCase();
+  const out = document.getElementById('tc-list');
+  const filtered = cases.filter(c=>
+    (!ft||c.tipo===ft)&&(!fe||c.estado===fe)&&(!fp||c.prio===fp)&&
+    (!fq||c.title.toLowerCase().includes(fq)||c.mod.toLowerCase().includes(fq))
+  );
+  document.getElementById('f-count').textContent = filtered.length+' caso'+(filtered.length!==1?'s':'');
+
+  if (!filtered.length) {
+    out.innerHTML=`<div class="empty-state">
+      <div class="empty-ico">📋</div>
+      <h3>${cases.length?'Sin resultados para estos filtros':'No hay casos todavía'}</h3>
+      <p>${cases.length?'Prueba cambiando los filtros de búsqueda.':'Crea tu primer caso de prueba para comenzar.'}</p>
+      <button class="btn b-pri" onclick="nav('nuevo')">+ Crear caso</button>
+    </div>`;
+    return;
+  }
+
+  const PB={P1:'t-p1',P2:'t-p2',P3:'t-p3'};
+  const EB={pendiente:'t-pend',pass:'t-pass',fail:'t-fail',bloqueado:'t-bloq'};
+  out.innerHTML = filtered.map(c => {
+    const ri=cases.indexOf(c);
+    return `<div class="tc-item">
+      <div class="tc-head">
+        <span class="tc-id">${c.id}</span>
+        <span class="tc-title">${c.title}</span>
+        <span class="tag ${PB[c.prio]}">${c.prio}</span>
+        <span class="tag t-tipo">${c.tipo}</span>
+        <span class="tag ${EB[c.estado]}">${c.estado}</span>
+      </div>
+      <div class="tc-meta">
+        <span>${c.mod}</span>
+        ${c.qa?`<span>· ${c.qa}</span>`:''}
+        <span>· ${(c.steps||[]).length} paso${c.steps?.length!==1?'s':''}</span>
+        <span>· ${c.fecha}</span>
+        <select class="st-sel" onchange="changeStatus(${ri},this.value)">
+          <option value="pendiente" ${c.estado==='pendiente'?'selected':''}>Pendiente</option>
+          <option value="pass"      ${c.estado==='pass'?'selected':''}>Pass ✓</option>
+          <option value="fail"      ${c.estado==='fail'?'selected':''}>Fail ✗</option>
+          <option value="bloqueado" ${c.estado==='bloqueado'?'selected':''}>Bloqueado</option>
+        </select>
+      </div>
+      <div class="tc-actions">
+        <button class="btn b-sec b-xs" onclick="viewDetail(${ri})">Ver detalle</button>
+        <button class="btn b-sec b-xs" onclick="editCase(${ri})">Editar</button>
+        <button class="btn b-red b-xs" onclick="deleteCase(${ri})">Eliminar</button>
+        ${c.estado==='fail'?`<button class="btn b-xs" style="background:var(--am-l);color:var(--am2);border:1.5px solid rgba(186,117,23,.25)" onclick="dupRetest(${ri})">Duplicar como retest</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── DETAIL MODAL ──────────────────────────────────────
+function viewDetail(i) {
+  modalIdx=i; const c=cases[i];
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-sub').textContent   = `${c.id} · ${c.mod} · ${c.tipo} · ${c.prio}`;
+  const PB={P1:'t-p1',P2:'t-p2',P3:'t-p3'}, EB={pendiente:'t-pend',pass:'t-pass',fail:'t-fail',bloqueado:'t-bloq'};
+  document.getElementById('modal-body').innerHTML=`
+    ${c.desc?`<div class="det-sec"><div class="det-label">Descripción</div><p class="det-text">${c.desc}</p></div>`:''}
+    ${c.pre?`<div class="det-sec"><div class="det-label">Precondiciones</div><p class="det-text">${c.pre}</p></div>`:''}
+    ${c.datos?`<div class="det-sec"><div class="det-label">Datos de prueba</div><p class="det-text" style="font-family:var(--mo);font-size:12px;background:var(--bg3);padding:9px 12px;border-radius:9px;border:1.5px solid var(--bd)">${c.datos}</p></div>`:''}
+    ${(c.steps||[]).length?`<div class="det-sec"><div class="det-label">Pasos (${c.steps.length})</div>${c.steps.map((s,j)=>`<div class="step-row"><span class="step-num">${j+1}.</span><span style="font-size:13px;color:var(--t2)">${s}</span></div>`).join('')}</div>`:''}
+    ${c.esp?`<div class="det-sec"><div class="det-label">Resultado esperado</div><p class="det-text">${c.esp}</p></div>`:''}
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1.5px solid var(--bg3)">
+      <span class="tag ${PB[c.prio]}">${c.prio}</span>
+      <span class="tag ${EB[c.estado]}">${c.estado}</span>
+      <span class="tag t-tipo">${c.comp}</span>
+      ${c.qa?`<span class="tag" style="background:var(--pu-l);color:var(--pu2);border:1.5px solid rgba(127,119,221,.25)">${c.qa}</span>`:''}
+      <span class="tag t-pend">${c.fecha}</span>
+    </div>`;
+  document.getElementById('modal-ov').classList.add('on');
+}
+function closeModal() { document.getElementById('modal-ov').classList.remove('on'); }
+function editFromModal() { closeModal(); editCase(modalIdx); }
+
+// ── RESUMEN ───────────────────────────────────────────
+function renderResumen() {
+  const out = document.getElementById('res-content');
+  if (!cases.length) {
+    out.innerHTML=`<div class="empty-state"><div class="empty-ico">📊</div><h3>Sin datos aún</h3><p>Crea casos de prueba para ver el resumen del sprint.</p><button class="btn b-pri" onclick="nav('nuevo')">+ Crear primer caso</button></div>`;
+    return;
+  }
+  const tot=cases.length,
+        pass=cases.filter(c=>c.estado==='pass').length,
+        fail=cases.filter(c=>c.estado==='fail').length,
+        pend=cases.filter(c=>c.estado==='pendiente').length,
+        bloq=cases.filter(c=>c.estado==='bloqueado').length,
+        pct=Math.round(pass/tot*100),
+        mods=[...new Set(cases.map(c=>c.mod))];
+
+  out.innerHTML=`
+    <div class="stat-grid">
+      <div class="stat stat-neutral"><div class="stat-lbl" style="color:var(--t3)">Total</div><div class="stat-val">${tot}</div></div>
+      <div class="stat stat-teal"><div class="stat-lbl" style="color:#085041">Pass</div><div class="stat-val" style="color:var(--te)">${pass}</div></div>
+      <div class="stat stat-red"><div class="stat-lbl" style="color:var(--re2)">Fail</div><div class="stat-val" style="color:var(--re)">${fail}</div></div>
+      <div class="stat stat-purple"><div class="stat-lbl" style="color:var(--pu2)">Pendientes</div><div class="stat-val" style="color:var(--pu)">${pend}</div></div>
+      <div class="stat stat-amber"><div class="stat-lbl" style="color:var(--am2)">Bloqueados</div><div class="stat-val" style="color:var(--am)">${bloq}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px" class="two-col">
+      <div class="card card-sm">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:13px">Progreso de ejecución</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;font-weight:600">
+          <span style="color:var(--t2)">Completado</span>
+          <span style="color:var(--te);font-family:var(--fh)">${pct}%</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <hr>
+        ${mods.map(m => {
+          const mc=cases.filter(c=>c.mod===m), mp=mc.filter(c=>c.estado==='pass').length, mpct=Math.round(mp/mc.length*100);
+          return `<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;font-weight:600">
+              <span style="color:var(--t2)">${m}</span>
+              <span style="color:var(--t3);font-family:var(--mo)">${mc.length}c · ${mpct}%</span>
+            </div>
+            <div class="prog-wrap" style="height:7px"><div class="prog-fill" style="width:${mpct}%;background:var(--sb)"></div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:13px">Por tipo</div>
+        ${['funcional','regresion','humo','api','e2e','ui'].map(t=>{
+          const n=cases.filter(c=>c.tipo===t).length; if(!n) return '';
+          return `<div class="bar-row"><span class="bar-lbl">${t}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/tot*100)}%;background:var(--pu)"></div></div><span class="bar-val" style="color:var(--pu)">${n}</span></div>`;
+        }).join('')}
+        <hr>
+        <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin:0 0 11px">Por prioridad</div>
+        ${['P1','P2','P3'].map(p=>{
+          const n=cases.filter(c=>c.prio===p).length; if(!n) return '';
+          const col={P1:'var(--re)',P2:'var(--am)',P3:'var(--bl)'}[p];
+          return `<div class="bar-row"><span class="bar-lbl">${p}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/tot*100)}%;background:${col}"></div></div><span class="bar-val" style="color:${col}">${n}</span></div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card card-sm">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:13px">Todos los casos</div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr>${['ID','Módulo','Título','Tipo','Prio','Estado','QA'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${cases.map((c,i)=>{
+            const PB={P1:'t-p1',P2:'t-p2',P3:'t-p3'}, EB={pendiente:'t-pend',pass:'t-pass',fail:'t-fail',bloqueado:'t-bloq'};
+            return `<tr onclick="viewDetail(${i})">
+              <td style="font-family:var(--mo);color:var(--t3)">${c.id}</td>
+              <td style="font-weight:600;color:var(--t2)">${c.mod}</td>
+              <td style="font-weight:500">${c.title}</td>
+              <td><span class="tag t-tipo">${c.tipo}</span></td>
+              <td><span class="tag ${PB[c.prio]}">${c.prio}</span></td>
+              <td><span class="tag ${EB[c.estado]}">${c.estado}</span></td>
+              <td style="color:var(--t3)">${c.qa||'—'}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ── EXPORT CSV ────────────────────────────────────────
+function exportCSV() {
+  if (!cases.length) { showToast('No hay casos para exportar','er'); return; }
+  const headers=['ID','Módulo','Título','Tipo','Prioridad','Complejidad','Estado','Asignado','Pasos','Datos de prueba','Resultado esperado','Fecha'];
+  const rows=cases.map(c=>[c.id,c.mod,c.title,c.tipo,c.prio,c.comp,c.estado,c.qa||'',(c.steps||[]).join(' | '),c.datos||'',c.esp||'',c.fecha].map(v=>`"${String(v).replace(/"/g,'""')}"`));
+  const csv=[headers.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='qa-casos-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); showToast('CSV exportado');
+}
+function clearAll() {
+  if (!confirm('¿Eliminar TODOS los casos y referencias guardadas?\n\nEsta acción no se puede deshacer.')) return;
+  cases=[]; refs=[]; persist(); updateBadge(); renderCasos(); showToast('Datos eliminados','in');
+}
+
+// ── INIT ──────────────────────────────────────────────
+hydrate();
+resetForm();
+updateBadge();
+renderRefs();
+</script>
+</body>
+</html>
